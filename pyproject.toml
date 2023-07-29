@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["page_config_model"]
+
+[project]
+name = "page-config-model"
+authors = [
+    {name = "Colm O'Connor", email = "colm.oconnor.github@gmail.com"},
+]
+description = "Page config model library."
+license = {file = "LICENSE.txt"}
+requires-python = ">=3.7.0"
+keywords = ["yaml", "hitchdev", "bdd", "tdd", "playwright", "tests"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Software Development :: Libraries",
+    "Natural Language :: English",
+    "Environment :: Console",
+]
+dependencies = [
+    "strictyaml>=1.4.3",
+    "playwright",
+]
+dynamic = ["version", "readme"]
+
+[project.urls]
+homepage = "https://hitchdev.com/page-config-model"
+documentation = "https://hitchdev.com/page-config-model/using"
+repository = "https://github.com/hitchdev/page-config-model"
+changelog = "https://hitchdev.com/page-config-model/changelog"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md",], content-type = "text/markdown"}
+version = {file = "VERSION"}
