@@ -5,16 +5,15 @@ Quickstart:
     files:
       selectors.yml: |
         login:
-            element:
+          element:
             username: "#id_username"
             password: "#id_password"
             ok: "#id_ok_button"
         dashboard:
-            element:
+          element:
             dashboard: "#id_this_is_a_dashboard_element"
             message: "#id_dashboard_message"
-
-    website:
+    html:
       index.html: |
         <div class="form-login">
         <input type="text" id="id_username" class="form-control input-sm chat-input" placeholder="username" /></br>
@@ -41,7 +40,7 @@ Quickstart:
           page = browser.new_page()
             
           conf = PageConfig(
-            *Path(".").glob("*.yml")    # all .yml files in this folder
+              *Path(".").glob("*.yml")    # all .yml files in this folder
           ).with_playwright_page(page)
 
           page.goto("http://localhost:8000")

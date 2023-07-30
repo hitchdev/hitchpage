@@ -3,12 +3,34 @@ from hitchstory import GivenDefinition, GivenProperty, InfoDefinition, InfoPrope
 from strictyaml import EmptyDict, Str, Map, Optional, Enum, MapPattern, Bool
 from hitchstory import no_stacktrace_for, strings_match
 from hitchrunpy import ExamplePythonCode, HitchRunPyException
-from commandlib import Command
+from commandlib import Command, python
 from commandlib.exceptions import CommandExitError
 from path import Path
 import colorama
+import socket
+import jinja2
+import shutil
 import shlex
+import time
 import re
+
+
+def wait_for_port(port_number: int):
+    connector = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connected = False
+    start_time = time.time()
+    while not connected:
+        try:
+            connector.connect(("localhost", 3605))
+            time.sleep(0.05)
+            connected = True
+        except OSError:
+            pass
+        
+        if time.time() - start_time > 2.0:
+            break
+    if not connected:
+        raise Failure(f"Port {port_number} never opened.")
 
 
 class Engine(BaseEngine):
@@ -19,7 +41,7 @@ class Engine(BaseEngine):
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,
         ),
-        website=GivenProperty(
+        html=GivenProperty(
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,
         ),
@@ -44,6 +66,9 @@ class Engine(BaseEngine):
         self.path.q = Path("/tmp/q")
         self.path.state = self.path.gen.joinpath("state")
         self.path.working = self.path.state / "working"
+        self.path.website = self.path.gen / "website"
+
+        self._podman("run", "-d", "playwright").output()
 
         if self.path.q.exists():
             self.path.q.remove()
@@ -51,29 +76,30 @@ class Engine(BaseEngine):
             self.path.state.rmtree(ignore_errors=True)
         self.path.state.mkdir()
         
+        if self.path.website.exists():
+            self.path.website.rmtree(ignore_errors=True)
+        
         self._included_files = []
         
-        self._podman("run", "-d", "playwright").output()
+        shutil.copytree(self.path.key / "htmltemplate", self.path.website)
         
-        import socket
-        import time
-        connector = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        for filename, contents in list(self.given.get("html", {}).items()):
+            self.path.website.joinpath(filename).write_text(
+                jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(searchpath=self.path.website)
+                ).get_template("base.html").render(content=contents)
+            )
         
-        connected = False
-        while not connected:
-            try:
-                connector.connect(("localhost", 3605))
-                time.sleep(0.05)
-                connected = True
-            except OSError:
-                pass
-
-        if not connected:
-            raise Failure("Playwright container wouldn't start")
+        self._webserver = python(
+            "-m", "http.server", "8001"
+        ).in_dir(self.path.website).interact().run()
 
         for filename, contents in list(self.given.get("files", {}).items()):
             self.path.state.joinpath(filename).write_text(self.given["files"][filename])
             self._included_files.append(self.path.state.joinpath(filename))
+
+        wait_for_port(3605)
+        wait_for_port(8001)
 
         self.python = Command(self._python_path)
 
@@ -135,5 +161,7 @@ class Engine(BaseEngine):
     def tear_down(self):
         if hasattr(self, "_podman"):
             self._podman("stop", "-t", "1", "--latest").output()
+        if hasattr(self, "_webserver"):
+            self._webserver.kill()
         if self.path.q.exists():
             print(self.path.q.text())
