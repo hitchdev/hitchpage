@@ -37,6 +37,7 @@ class Engine(BaseEngine):
         self._python_path = python_path
         self._cprofile = cprofile
         self._timeout = timeout
+        self._podman = Command("podman")
 
     def set_up(self):
         """Set up the environment ready to run the stories."""
@@ -51,6 +52,24 @@ class Engine(BaseEngine):
         self.path.state.mkdir()
         
         self._included_files = []
+        
+        self._podman("run", "-d", "playwright").output()
+        
+        import socket
+        import time
+        connector = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        connected = False
+        while not connected:
+            try:
+                connector.connect(("localhost", 3605))
+                time.sleep(0.05)
+                connected = True
+            except OSError:
+                pass
+
+        if not connected:
+            raise Failure("Playwright container wouldn't start")
 
         for filename, contents in list(self.given.get("files", {}).items()):
             self.path.state.joinpath(filename).write_text(self.given["files"][filename])
@@ -114,5 +133,7 @@ class Engine(BaseEngine):
                     raise
 
     def tear_down(self):
+        if hasattr(self, "_podman"):
+            self._podman("stop", "-t", "1", "--latest").output()
         if self.path.q.exists():
             print(self.path.q.text())

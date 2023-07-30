@@ -37,7 +37,7 @@ Quickstart:
           from page_config_model import PageConfig
           from pathlib import Path
             
-          browser = sync_playwright().start().chromium
+          browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")
           page = browser.new_page()
             
           conf = PageConfig(

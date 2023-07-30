@@ -6,10 +6,10 @@ from engine import Engine
 
 
 toolkit = hitchpylibrarytoolkit.ProjectToolkitV2(
-    "HitchStory",
-    "hitchstory",
-    "hitchdev/hitchstory",
-    image="![](/images/hitchstory-splash.png)",
+    "PageConfigModel",
+    "page_config_model",
+    "hitchdev/page-config-model",
+    image="",
 )
 
 
@@ -165,7 +165,7 @@ def envirotest(strategy_name):
 
     test_package = pyenv.PythonRequirements(
         [
-            "hitchstory=={}".format(_current_version()),
+            "page-config-model=={}".format(_current_version()),
         ],
         test_repo=True,
     )
