@@ -129,7 +129,7 @@ class Engine(BaseEngine):
             to_run.expect_exceptions().run() if raises is not None else to_run.run()
         )
 
-        actual_output = self._story_friendly_output(result.output)
+        actual_output = result.output
 
         if will_output is not None:
             try:

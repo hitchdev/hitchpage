@@ -33,21 +33,22 @@ Quickstart:
     - Run:
         code: |
           from playwright.sync_api import expect, sync_playwright
-          from page_config_model import PageConfig
+          from page_config_model import PlaywrightPageConfig
           from pathlib import Path
             
           browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")
           page = browser.new_page()
             
-          conf = PageConfig(
-              *Path(".").glob("*.yml")    # all .yml files in this folder
-          ).with_playwright_page(page)
+          conf = PlaywrightPageConfig(
+              *Path(".").glob("*.yml"),    # all .yml files in this folder
+              playwright_page=page,
+          )
 
-          page.goto("http://localhost:8000")
+          page.goto("http://localhost:8001")
           conf.next_page("login")
           conf.element("username").fill("myusername")
           conf.element("password").fill("mypassword")
           conf.element("ok").click()
             
-          page.next_page("dashboard")
+          conf.next_page("dashboard")
           expect(conf.element("message")).to_be_visible()
