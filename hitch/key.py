@@ -7,9 +7,10 @@ from engine import Engine
 
 toolkit = hitchpylibrarytoolkit.ProjectToolkitV2(
     "PageConfigModel",
-    "page_config_model",
+    "page-config-model",
     "hitchdev/page-config-model",
     image="",
+    package_name="page_config_model",
 )
 
 
