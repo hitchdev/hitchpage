@@ -37,6 +37,7 @@ class Engine(BaseEngine):
     """Python engine for running tests."""
 
     given_definition = GivenDefinition(
+        setup=GivenProperty(Str()),
         files=GivenProperty(
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,

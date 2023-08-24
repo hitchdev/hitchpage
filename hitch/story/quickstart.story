@@ -28,23 +28,24 @@ Quickstart:
         <div class="form-login">
           <h4 id="id_this_is_a_dashboard_element">Dashboard</h4>  <p id="id_dashboard_message">hello!</a>
         </div>
+    setup: |
+      from playwright.sync_api import expect, sync_playwright
+      from page_config_model import PlaywrightPageConfig
+      from pathlib import Path
+      
+      browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")
+      page = browser.new_page()
+      
+      conf = PlaywrightPageConfig(
+          *Path(".").glob("*.yml"),    # all .yml files in this folder
+          playwright_page=page,
+      )
+
+      page.goto("http://localhost:8001")
 
   steps:
     - Run:
         code: |
-          from playwright.sync_api import expect, sync_playwright
-          from page_config_model import PlaywrightPageConfig
-          from pathlib import Path
-            
-          browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")
-          page = browser.new_page()
-            
-          conf = PlaywrightPageConfig(
-              *Path(".").glob("*.yml"),    # all .yml files in this folder
-              playwright_page=page,
-          )
-
-          page.goto("http://localhost:8001")
           conf.next_page("login")
           conf.element("username").fill("myusername")
           conf.element("password").fill("mypassword")
