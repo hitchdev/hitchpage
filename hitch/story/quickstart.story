@@ -13,6 +13,12 @@ Quickstart:
           element:
             dashboard: "#id_this_is_a_dashboard_element"
             message: "#id_dashboard_message"
+            next:
+              text: next
+        iframe:
+          element:
+            iframe message: "#id_iframe_page"
+            
     html:
       index.html: |
         <div class="form-login">
@@ -26,7 +32,13 @@ Quickstart:
         </div>
       dashboard.html: |
         <div class="form-login">
-          <h4 id="id_this_is_a_dashboard_element">Dashboard</h4>  <p id="id_dashboard_message">hello!</a>
+          <h4 id="id_this_is_a_dashboard_element">Dashboard</h4>
+          <p id="id_dashboard_message">hello!</a>
+          <a href="/iframe.html" class="btn btn-primary btn-md">next</i></a>
+        </div>
+      iframe.html: |
+        <div class="form-login">
+          <h4 id="id_iframe_page">This is an iframe page</h4>
         </div>
     setup: |
       from playwright.sync_api import expect, sync_playwright
@@ -53,3 +65,8 @@ Quickstart:
             
           conf.next_page("dashboard")
           expect(conf.element("message")).to_be_visible()
+          
+          conf.element("next").click()
+          conf.next_page("iframe")
+          expect(conf.element("iframe message")).to_be_visible()
+          

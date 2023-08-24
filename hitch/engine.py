@@ -26,7 +26,7 @@ def wait_for_port(port_number: int):
             connected = True
         except OSError:
             pass
-        
+
         if time.time() - start_time > 2.0:
             break
     if not connected:
@@ -50,7 +50,17 @@ class Engine(BaseEngine):
 
     info_definition = InfoDefinition(
         status=InfoProperty(schema=Enum(["experimental", "stable"])),
-        category=InfoProperty(schema=Enum(["behavior", "runner", "inheritance", "parameterization", "documentation",])),
+        category=InfoProperty(
+            schema=Enum(
+                [
+                    "behavior",
+                    "runner",
+                    "inheritance",
+                    "parameterization",
+                    "documentation",
+                ]
+            )
+        ),
         docs=InfoProperty(schema=Str()),
     )
 
@@ -76,24 +86,29 @@ class Engine(BaseEngine):
         if self.path.state.exists():
             self.path.state.rmtree(ignore_errors=True)
         self.path.state.mkdir()
-        
+
         if self.path.website.exists():
             self.path.website.rmtree(ignore_errors=True)
-        
+
         self._included_files = []
-        
+
         shutil.copytree(self.path.key / "htmltemplate", self.path.website)
-        
+
         for filename, contents in list(self.given.get("html", {}).items()):
             self.path.website.joinpath(filename).write_text(
                 jinja2.Environment(
                     loader=jinja2.FileSystemLoader(searchpath=self.path.website)
-                ).get_template("base.html").render(content=contents)
+                )
+                .get_template("base.html")
+                .render(content=contents)
             )
-        
-        self._webserver = python(
-            "-m", "http.server", "8001"
-        ).in_dir(self.path.website).interact().run()
+
+        self._webserver = (
+            python("-m", "http.server", "8001")
+            .in_dir(self.path.website)
+            .interact()
+            .run()
+        )
 
         for filename, contents in list(self.given.get("files", {}).items()):
             self.path.state.joinpath(filename).write_text(self.given["files"][filename])
