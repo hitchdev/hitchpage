@@ -17,7 +17,7 @@ Quickstart:
               text: next
         iframe:
           element:
-            iframe message: "#id_iframe_page"
+            iframe page title: "#id_iframe_title"
             
     html:
       index.html: |
@@ -38,16 +38,19 @@ Quickstart:
         </div>
       iframe.html: |
         <div class="form-login">
-          <h4 id="id_iframe_page">This is an iframe page</h4>
+          <h4 id="id_iframe_title">This page contains an iframe</h4>
+          <iframe id="message_iframe" src="iframe_content.html" />
         </div>
+      iframe_content.html: |
+        <p id="id_dashboard_message">hello!</a>
     setup: |
       from playwright.sync_api import expect, sync_playwright
       from page_config_model import PlaywrightPageConfig
       from pathlib import Path
-      
+
       browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")
       page = browser.new_page()
-      
+
       conf = PlaywrightPageConfig(
           *Path(".").glob("*.yml"),    # all .yml files in this folder
           playwright_page=page,
@@ -56,17 +59,27 @@ Quickstart:
       page.goto("http://localhost:8001")
 
   steps:
-    - Run:
-        code: |
-          conf.next_page("login")
-          conf.element("username").fill("myusername")
-          conf.element("password").fill("mypassword")
-          conf.element("ok").click()
-            
-          conf.next_page("dashboard")
-          expect(conf.element("message")).to_be_visible()
+  - Run:
+      code: |
+        conf.next_page("login")
+        print("login page")
+        conf.element("username").fill("myusername")
+        conf.element("password").fill("mypassword")
+        conf.element("ok").click()
           
-          conf.element("next").click()
-          conf.next_page("iframe")
-          expect(conf.element("iframe message")).to_be_visible()
-          
+        conf.next_page("dashboard")
+        print("dashboard page")
+        expect(conf.element("message")).to_be_visible()
+
+        conf.element("next").click()
+        conf.next_page("iframe")
+        print("iframe page")
+        expect(conf.element("iframe page title")).to_be_visible()
+        #expect(conf.element("iframe contents")).to_be_visible()
+        
+      will output: |-
+        login page                                                                                                                                                      
+        dashboard page                                                                                                                                                  
+        iframe page
+
+
