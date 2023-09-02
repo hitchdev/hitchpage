@@ -3,10 +3,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["page_config_model"]
+packages = ["hitchpage"]
 
 [project]
-name = "page-config-model"
+name = "hitchpage"
 authors = [
     {name = "Colm O'Connor", email = "colm.oconnor.github@gmail.com"},
 ]
@@ -30,10 +30,10 @@ dependencies = [
 dynamic = ["version", "readme"]
 
 [project.urls]
-homepage = "https://hitchdev.com/page-config-model"
-documentation = "https://hitchdev.com/page-config-model/using"
-repository = "https://github.com/hitchdev/page-config-model"
-changelog = "https://hitchdev.com/page-config-model/changelog"
+homepage = "https://hitchdev.com/hitchpage"
+documentation = "https://hitchdev.com/hitchpage/using"
+repository = "https://github.com/hitchdev/hitchpage"
+changelog = "https://hitchdev.com/hitchpage/changelog"
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md",], content-type = "text/markdown"}

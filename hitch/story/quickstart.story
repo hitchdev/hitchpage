@@ -45,7 +45,7 @@ Quickstart:
         <p id="id_dashboard_message">hello!</a>
     setup: |
       from playwright.sync_api import expect, sync_playwright
-      from page_config_model import PlaywrightPageConfig
+      from hitchpage import PlaywrightPageConfig
       from pathlib import Path
 
       browser = sync_playwright().start().chromium.connect("ws://127.0.0.1:3605")

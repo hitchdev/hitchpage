@@ -3,7 +3,7 @@
 .pytest_cache
 build/
 dist/
-page_config_model.egg-info/
+hitchpage.egg-info/
 docs/snippets/
 docs/draft/
 docs/src/using/
