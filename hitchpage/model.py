@@ -92,7 +92,10 @@ class PlaywrightPageConfig:
     def _get_iframe(self, page_or_iframe, which_iframe):
         lookup = self._get_element_lookup(which_iframe)
         if lookup.is_in_iframe:
-            raise NotImplementedError()
+            return self._get_iframe(
+                page_or_iframe,
+                lookup.in_iframe,
+            ).frame_locator(lookup.locator)
         elif lookup.is_locator:
             return page_or_iframe.frame_locator(lookup.locator)
         else:

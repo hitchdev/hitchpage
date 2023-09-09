@@ -42,7 +42,7 @@ Iframe:
         print("iframe page")
         expect(conf.element("iframe page title")).to_be_visible()
         expect(conf.element("iframe content message")).to_be_visible()
-        #expect(conf.element("iframe in iframe message")).to_be_visible()
+        expect(conf.element("iframe in iframe message")).to_be_visible()
 
       will output: |-
         iframe page
