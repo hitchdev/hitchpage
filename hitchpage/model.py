@@ -21,6 +21,10 @@ class ElementLookup:
     @property
     def is_in_iframe(self):
         return "in iframe" in self._conf
+    
+    @property
+    def is_text(self):
+        return "text" in self._conf
 
     @property
     def in_iframe(self):
@@ -103,7 +107,7 @@ class PlaywrightPageConfig:
 
             if lookup.is_locator:
                 return page_or_iframe.locator(lookup.locator)
-            elif "text" in lookup:
+            elif lookup.is_text:
                 return page_or_iframe.get_by_text(lookup.text)
             else:
                 raise Exception("Bad error")
