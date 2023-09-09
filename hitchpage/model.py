@@ -5,11 +5,20 @@ from strictyaml import load, MapPattern, Optional, Str, Map
 
 
 class ElementLookup:
-    def __init__(self, conf_dict):
-        self._conf_dict = conf_dict
+    def __init__(self, conf):
+        self._conf = conf
 
     def __getitem__(self, key):
-        return self._conf_dict[key]
+        return self._conf[key]
+
+    @property
+    def locator(self):
+        if isinstance(self._conf, str):
+            return self._conf
+        elif "locator" in self._conf:
+            return self._conf["locator"]
+        else:
+            raise Exception("locator not available")
 
 
 class PlaywrightPageConfig:
@@ -57,32 +66,20 @@ class PlaywrightPageConfig:
 
     def _get_iframe(self, which_iframe):
         return self._playwright_page.frame_locator(
-            self._locator(which_iframe)
+            self._page_conf["element"][which_iframe].locator
         )
-    
-    def _locator(self, name):
-        element_conf = self._page_conf["element"][name]
-        if isinstance(element_conf._conf_dict, str):
-            return element_conf._conf_dict
-        elif isinstance(element_conf._conf_dict, dict):
-            if "locator" in element_conf._conf_dict:
-                return element_conf["locator"]
-            else:
-                raise Exception(f"Must use locator for {name} in {self._current_page}")
-        else:
-            raise Exception("Bad error")
 
     def element(self, name):
         element_dict = self._page_conf["element"][name]
-        if isinstance(element_dict._conf_dict, str):
-            return self._playwright_page.locator(element_dict._conf_dict)
+        if isinstance(element_dict._conf, str):
+            return self._playwright_page.locator(element_dict._conf)
         else:
-            if "in iframe" in element_dict._conf_dict:
+            if "in iframe" in element_dict._conf:
                 page = self._get_iframe(element_dict["in iframe"])
             else:
                 page = self._playwright_page
 
-            if "locator" in element_dict._conf_dict:
+            if "locator" in element_dict._conf:
                 return page.locator(element_dict["locator"])
             elif "text" in element_dict:
                 return page.get_by_text(element_dict["text"])
