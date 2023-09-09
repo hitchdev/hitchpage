@@ -12,6 +12,18 @@ class ElementLookup:
         return self._conf[key]
 
     @property
+    def simple_locator(self):
+        return isinstance(self._conf, str)
+
+    @property
+    def is_locator(self):
+        return isinstance(self._conf, str) or "locator" in self._conf
+
+    @property
+    def in_iframe(self):
+        return "in iframe" in self._conf
+
+    @property
     def locator(self):
         if isinstance(self._conf, str):
             return self._conf
@@ -71,8 +83,9 @@ class PlaywrightPageConfig:
 
     def element(self, name):
         element_dict = self._page_conf["element"][name]
-        if isinstance(element_dict._conf, str):
-            return self._playwright_page.locator(element_dict._conf)
+        
+        if element_dict.simple_locator:
+            return self._playwright_page.locator(element_dict.locator)
         else:
             if "in iframe" in element_dict._conf:
                 page = self._get_iframe(element_dict["in iframe"])
