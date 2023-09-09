@@ -20,7 +20,7 @@ class PlaywrightPageConfig:
         self._config_dict = {
             page_name: {
                 "element": {
-                    element: element_conf
+                    element: ElementLookup(element_conf)
                     for element, element_conf in 
                     page_conf["element"].items()
                 }
@@ -62,10 +62,10 @@ class PlaywrightPageConfig:
     
     def _locator(self, name):
         element_conf = self._page_conf["element"][name]
-        if isinstance(element_conf, str):
-            return element_conf
-        elif isinstance(element_conf, dict):
-            if "locator" in element_conf:
+        if isinstance(element_conf._conf_dict, str):
+            return element_conf._conf_dict
+        elif isinstance(element_conf._conf_dict, dict):
+            if "locator" in element_conf._conf_dict:
                 return element_conf["locator"]
             else:
                 raise Exception(f"Must use locator for {name} in {self._current_page}")
@@ -74,15 +74,15 @@ class PlaywrightPageConfig:
 
     def element(self, name):
         element_dict = self._page_conf["element"][name]
-        if isinstance(element_dict, str):
-            return self._playwright_page.locator(element_dict)
+        if isinstance(element_dict._conf_dict, str):
+            return self._playwright_page.locator(element_dict._conf_dict)
         else:
-            if "in iframe" in element_dict:
+            if "in iframe" in element_dict._conf_dict:
                 page = self._get_iframe(element_dict["in iframe"])
             else:
                 page = self._playwright_page
 
-            if "locator" in element_dict:
+            if "locator" in element_dict._conf_dict:
                 return page.locator(element_dict["locator"])
             elif "text" in element_dict:
                 return page.get_by_text(element_dict["text"])
