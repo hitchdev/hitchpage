@@ -20,6 +20,8 @@ class PlaywrightPageConfig:
                             | Map(
                                 {
                                     Optional("text"): Str(),
+                                    Optional("locator"): Str(),
+                                    Optional("in iframe"): Str(),
                                 }
                             ),
                         )
@@ -34,13 +36,25 @@ class PlaywrightPageConfig:
     @property
     def _page_conf(self):
         return self._config_dict[self._current_page]
+    
+    def _get_iframe(self, which_iframe):
+        return self._playwright_page.frame_locator(
+            self._page_conf["element"][which_iframe]["locator"]
+        )
 
     def element(self, name):
         element_dict = self._page_conf["element"][name]
         if isinstance(element_dict, str):
             return self._playwright_page.locator(element_dict)
         else:
-            if "text" in element_dict:
-                return self._playwright_page.get_by_text(element_dict["text"])
+            if "in iframe" in element_dict:
+                page = self._get_iframe(element_dict["in iframe"])
+            else:
+                page = self._playwright_page
+
+            if "locator" in element_dict:
+                return page.locator(element_dict["locator"])
+            elif "text" in element_dict:
+                return page.get_by_text(element_dict["text"])
             else:
                 raise Exception("Unknown")

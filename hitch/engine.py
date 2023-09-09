@@ -64,7 +64,7 @@ class Engine(BaseEngine):
         docs=InfoProperty(schema=Str()),
     )
 
-    def __init__(self, paths, python_path, rewrite=False, cprofile=False, timeout=5.0):
+    def __init__(self, paths, python_path, rewrite=False, cprofile=False, timeout=30.0):
         self.path = paths
         self._rewrite = rewrite
         self._python_path = python_path
