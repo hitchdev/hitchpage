@@ -16,6 +16,12 @@ Iframe:
             iframe content message:
               in iframe: message iframe
               locator: "#id_dashboard_message"
+            iframe in iframe:
+              in iframe: message iframe
+              locator: "#child_iframe"
+            iframe in iframe message:
+              in iframe: iframe in iframe
+              locator: "#id_iframe_in_iframe"
             
     html:
       index.html: |
@@ -25,6 +31,9 @@ Iframe:
         </div>
       iframe_content.html: |
         <p id="id_dashboard_message">hello!</a>
+        <iframe id="child_iframe" src="iframe_in_iframe_content.html" />
+      iframe_in_iframe_content.html: |
+        <p id="id_iframe_in_iframe">message</a>
 
   steps:
   - Run:
@@ -33,6 +42,7 @@ Iframe:
         print("iframe page")
         expect(conf.element("iframe page title")).to_be_visible()
         expect(conf.element("iframe content message")).to_be_visible()
+        #expect(conf.element("iframe in iframe message")).to_be_visible()
 
       will output: |-
         iframe page

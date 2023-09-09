@@ -21,7 +21,7 @@ class ElementLookup:
     @property
     def is_in_iframe(self):
         return "in iframe" in self._conf
-    
+
     @property
     def is_text(self):
         return "text" in self._conf
@@ -89,10 +89,14 @@ class PlaywrightPageConfig:
     def _get_element_lookup(self, name):
         return self._config_dict[self._current_page]["element"][name]
 
-    def _get_iframe(self, which_iframe):
-        return self._playwright_page.frame_locator(
-            self._get_element_lookup(which_iframe).locator
-        )
+    def _get_iframe(self, page_or_iframe, which_iframe):
+        lookup = self._get_element_lookup(which_iframe)
+        if lookup.is_in_iframe:
+            raise NotImplementedError()
+        elif lookup.is_locator:
+            return page_or_iframe.frame_locator(lookup.locator)
+        else:
+            raise Exception("Bad error")
 
     def element(self, name):
         lookup = self._get_element_lookup(name)
@@ -101,7 +105,9 @@ class PlaywrightPageConfig:
             return self._playwright_page.locator(lookup.locator)
         else:
             if lookup.is_in_iframe:
-                page_or_iframe = self._get_iframe(lookup.in_iframe)
+                page_or_iframe = self._get_iframe(
+                    self._playwright_page, lookup.in_iframe
+                )
             else:
                 page_or_iframe = self._playwright_page
 
