@@ -27,6 +27,10 @@ class ElementLookup:
         return self._conf["in iframe"]
 
     @property
+    def text(self):
+        return self._conf["text"]
+
+    @property
     def locator(self):
         if isinstance(self._conf, str):
             return self._conf
@@ -84,19 +88,19 @@ class PlaywrightPageConfig:
         )
 
     def element(self, name):
-        element_dict = self._page_conf["element"][name]
+        lookup = self._page_conf["element"][name]
 
-        if element_dict.simple_locator:
-            return self._playwright_page.locator(element_dict.locator)
+        if lookup.simple_locator:
+            return self._playwright_page.locator(lookup.locator)
         else:
-            if element_dict.is_in_iframe:
-                page_or_iframe = self._get_iframe(element_dict.in_iframe)
+            if lookup.is_in_iframe:
+                page_or_iframe = self._get_iframe(lookup.in_iframe)
             else:
                 page_or_iframe = self._playwright_page
 
-            if "locator" in element_dict._conf:
-                return page_or_iframe.locator(element_dict["locator"])
-            elif "text" in element_dict:
-                return page_or_iframe.get_by_text(element_dict["text"])
+            if lookup.is_locator:
+                return page_or_iframe.locator(lookup.locator)
+            elif "text" in lookup:
+                return page_or_iframe.get_by_text(lookup.text)
             else:
                 raise Exception("Bad error")
