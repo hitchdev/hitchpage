@@ -10,7 +10,7 @@ Iframe:
       selectors.yml: |
         iframe:
           element:
-            iframe page title: "#id_iframe_title"
+            page title: "#id_iframe_title"
             message iframe:
               locator: "#message_iframe"
             iframe content message:
@@ -18,7 +18,7 @@ Iframe:
               locator: "#id_dashboard_message"
             iframe in iframe:
               in iframe: message iframe
-              locator: "#child_iframe"
+              locator: iframe
             iframe in iframe message:
               in iframe: iframe in iframe
               locator: "#id_iframe_in_iframe"
@@ -40,7 +40,7 @@ Iframe:
       code: |
         conf.next_page("iframe")
         print("iframe page")
-        expect(conf.element("iframe page title")).to_be_visible()
+        expect(conf.element("page title")).to_be_visible()
         expect(conf.element("iframe content message")).to_be_visible()
         expect(conf.element("iframe in iframe message")).to_be_visible()
 
