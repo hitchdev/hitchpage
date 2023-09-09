@@ -82,13 +82,16 @@ class PlaywrightPageConfig:
     def _page_conf(self):
         return self._config_dict[self._current_page]
 
+    def _get_element_lookup(self, name):
+        return self._config_dict[self._current_page]["element"][name]
+
     def _get_iframe(self, which_iframe):
         return self._playwright_page.frame_locator(
-            self._page_conf["element"][which_iframe].locator
+            self._get_element_lookup(which_iframe).locator
         )
 
     def element(self, name):
-        lookup = self._page_conf["element"][name]
+        lookup = self._get_element_lookup(name)
 
         if lookup.simple_locator:
             return self._playwright_page.locator(lookup.locator)
