@@ -36,7 +36,7 @@ class PlaywrightPageConfig:
     @property
     def _page_conf(self):
         return self._config_dict[self._current_page]
-    
+
     def _get_iframe(self, which_iframe):
         return self._playwright_page.frame_locator(
             self._page_conf["element"][which_iframe]["locator"]
