@@ -3,7 +3,6 @@ from pathlib import Path
 from strictyaml import load, MapPattern, Optional, Str, Map
 
 
-
 class ElementLookup:
     def __init__(self, conf):
         self._conf = conf
@@ -20,8 +19,12 @@ class ElementLookup:
         return isinstance(self._conf, str) or "locator" in self._conf
 
     @property
-    def in_iframe(self):
+    def is_in_iframe(self):
         return "in iframe" in self._conf
+
+    @property
+    def in_iframe(self):
+        return self._conf["in iframe"]
 
     @property
     def locator(self):
@@ -42,11 +45,10 @@ class PlaywrightPageConfig:
             page_name: {
                 "element": {
                     element: ElementLookup(element_conf)
-                    for element, element_conf in 
-                    page_conf["element"].items()
+                    for element, element_conf in page_conf["element"].items()
                 }
-            } for page_name, page_conf in 
-            load(
+            }
+            for page_name, page_conf in load(
                 self._config_files[0].read_text(),
                 MapPattern(
                     Str(),
@@ -83,18 +85,18 @@ class PlaywrightPageConfig:
 
     def element(self, name):
         element_dict = self._page_conf["element"][name]
-        
+
         if element_dict.simple_locator:
             return self._playwright_page.locator(element_dict.locator)
         else:
-            if "in iframe" in element_dict._conf:
-                page = self._get_iframe(element_dict["in iframe"])
+            if element_dict.is_in_iframe:
+                page_or_iframe = self._get_iframe(element_dict.in_iframe)
             else:
-                page = self._playwright_page
+                page_or_iframe = self._playwright_page
 
             if "locator" in element_dict._conf:
-                return page.locator(element_dict["locator"])
+                return page_or_iframe.locator(element_dict["locator"])
             elif "text" in element_dict:
-                return page.get_by_text(element_dict["text"])
+                return page_or_iframe.get_by_text(element_dict["text"])
             else:
                 raise Exception("Bad error")
