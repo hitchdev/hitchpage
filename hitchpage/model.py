@@ -49,6 +49,9 @@ class PlaywrightPageConfig:
         self._config_files = config_files
         self._playwright_page = playwright_page
         self._current_page = None
+        self.reload_config()
+
+    def reload_config(self):
         self._config_dict = {
             page_name: {
                 "element": {
