@@ -3,6 +3,8 @@ story: |
   ---
   title: {{ name }}
   ---
+  # {{ name }}
+
   {% if "status" in info %}
   {{ info["status"].documentation() }}
   {% endif %}
@@ -10,7 +12,7 @@ story: |
 
   {{ about }}
 
-  # Code Example
+  ## Code Example
 
   {% for name, property in given.items() %}
   {{ property.documentation() }}
@@ -62,9 +64,13 @@ given:
   html: |
     With HTML:
     
+    {% for filename, contents in html.items() %}
+    {{ filename }}:
+    
     ```html
-    {{ html }}
+    {{ contents }}
     ```
+    {% endfor %}
 variation: |
   ## {{ name }}
   
