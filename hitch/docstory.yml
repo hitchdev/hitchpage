@@ -34,7 +34,7 @@ story: |
   !!! note "Executable specification"
 
       Documentation automatically generated from 
-      <a href="https://github.com/hitchdev/hitchstory/blob/master/hitch/story/{{ filename.name }}">{{ filename.name }}
+      <a href="https://github.com/hitchdev/hitchpage/blob/master/hitch/story/{{ filename.name }}">{{ filename.name }}
       storytests.</a>
 
   {% endif %}
@@ -59,6 +59,12 @@ given:
     ```python
     {{ setup }}
     ```
+  html: |
+    With HTML:
+    
+    ```html
+    {{ html }}
+    ```
 variation: |
   ## {{ name }}
   
@@ -72,36 +78,6 @@ variation: |
   {{ step.documentation() }}
   {% endfor %}
 steps:
-  file was created with: |
-    File {{ filename }} should now contain:
-
-    ```
-    {{ contents }}
-    ```
-  example story unchanged: Then the example story will be unchanged.
-  
-  file contents will be: |
-    File {{ filename }} should now contain:
-    
-    ```
-    {{ contents }}
-    ```
-  
-  output is: |
-    The code will output:
-    ```
-    {{ expected_contents }}
-    ```
-  
-  tear down was run: Then teardown is run.
-
-  form filled: |
-    Then the form is filled with:
-    
-    {% for name, value in kwargs.items() %}
-    * {{ name }}: {{ value }}
-    {% endfor %}
-
   run: |
     {%- if in_interpreter %}
     ```python
@@ -134,14 +110,3 @@ steps:
     {% endif %}
     {% endif %}
     {% endif %}
-
-  pytest: |
-    `{% if env %}{% for key, value in env.items() %}{{ key }}={{ value }} {% endfor %}{% endif %}pytest {{ args }}`
-    
-    Outputs:
-    ```
-    {{ will_output }}
-    ```
-
-  run python: |
-    
