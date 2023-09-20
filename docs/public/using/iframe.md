@@ -1,6 +1,8 @@
 ---
 title: Iframe
 ---
+# Iframe
+
 
 
 
@@ -9,7 +11,7 @@ Look for an element inside an iframe.
 Then look for an element inside an iframe inside an iframe.
 
 
-# Code Example
+## Code Example
 
 
 With code:
@@ -54,9 +56,32 @@ iframe:
 
 With HTML:
 
+
+index.html:
+
 ```html
-{'index.html': '<div class="form-login">\n  <h4 id="id_iframe_title">This page contains an iframe</h4>\n  <iframe id="message_iframe" src="iframe_content.html" />\n</div>\n', 'iframe_content.html': '<p id="id_dashboard_message">hello!</a>\n<iframe id="child_iframe" src="iframe_in_iframe_content.html" />\n', 'iframe_in_iframe_content.html': '<p id="id_iframe_in_iframe">message</a>\n'}
+<div class="form-login">
+  <h4 id="id_iframe_title">This page contains an iframe</h4>
+  <iframe id="message_iframe" src="iframe_content.html" />
+</div>
+
 ```
+
+iframe_content.html:
+
+```html
+<p id="id_dashboard_message">hello!</a>
+<iframe id="child_iframe" src="iframe_in_iframe_content.html" />
+
+```
+
+iframe_in_iframe_content.html:
+
+```html
+<p id="id_iframe_in_iframe">message</a>
+
+```
+
 
 
 
