@@ -1,6 +1,8 @@
 ---
 title: Quickstart
 ---
+# Quickstart
+
 
 
 
@@ -8,7 +10,7 @@ Simple scenario with a log in page and a dashboard
 with some locator selectors and one text selector.
 
 
-# Code Example
+## Code Example
 
 
 With code:
@@ -50,9 +52,32 @@ dashboard:
 
 With HTML:
 
+
+index.html:
+
 ```html
-{'index.html': '<div class="form-login">\n<input type="text" id="id_username" placeholder="username" /></br>\n<input type="text" id="id_password" placeholder="password" /></br>\n<div class="wrapper">\n<span class="group-btn">     \n<a id="id_ok_button" href="/dashboard.html" class="btn btn-primary btn-md">login <i class="fa fa-sign-in"></i></a>\n</span>\n</div>\n</div>\n', 'dashboard.html': '<div class="form-login">\n  <h4 id="id_this_is_a_dashboard_element">Dashboard</h4>\n  <p id="id_dashboard_message">hello!</a>\n</div>\n'}
+<div class="form-login">
+<input type="text" id="id_username" placeholder="username" /></br>
+<input type="text" id="id_password" placeholder="password" /></br>
+<div class="wrapper">
+<span class="group-btn">     
+<a id="id_ok_button" href="/dashboard.html" class="btn btn-primary btn-md">login <i class="fa fa-sign-in"></i></a>
+</span>
+</div>
+</div>
+
 ```
+
+dashboard.html:
+
+```html
+<div class="form-login">
+  <h4 id="id_this_is_a_dashboard_element">Dashboard</h4>
+  <p id="id_dashboard_message">hello!</a>
+</div>
+
+```
+
 
 
 
